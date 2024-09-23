@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -70,12 +70,41 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+    where T: PartialOrd + Copy
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		if list_a.length == 0 && list_b.length == 0 {
+            list_a
+        }else if list_a.length == 0 && list_b.length != 0 {
+            list_b
+        }else if list_a.length != 0 && list_b.length == 0 {
+            list_a
+        }else {
+            let mut list = Self {
+                length: 0,
+                start: None,
+                end: None
+            };
+            let mut item_a = list_a.start;
+            let mut item_b = list_b.start;
+            while !item_a.is_none() || !item_b.is_none(){
+                unsafe {
+                    if item_a.is_none() {
+                        list.add((*item_b.unwrap().as_ptr()).val);
+                        item_b = (*item_b.unwrap().as_ptr()).next;
+                    }else if item_b.is_none() {
+                        list.add((*item_a.unwrap().as_ptr()).val);
+                        item_a = (*item_a.unwrap().as_ptr()).next;
+                    }else if (*item_a.unwrap().as_ptr()).val > (*item_b.unwrap().as_ptr()).val {
+                        list.add((*item_b.unwrap().as_ptr()).val);
+                        item_b = (*item_b.unwrap().as_ptr()).next;
+                    }else {
+                        list.add((*item_a.unwrap().as_ptr()).val);
+                        item_a = (*item_a.unwrap().as_ptr()).next;
+                    }
+                }
+            }
+            list
         }
 	}
 }

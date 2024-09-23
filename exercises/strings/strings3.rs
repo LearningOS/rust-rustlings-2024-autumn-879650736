@@ -13,7 +13,7 @@ fn compose_me(input: &str) -> String {
 }
 
 fn replace_me(input: &str) -> String {
-    input.replace("car","balloons")
+    input.replace("car","balloon")
 }
 
 #[cfg(test)]
